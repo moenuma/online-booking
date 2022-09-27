@@ -1,4 +1,4 @@
-package com.moenuma.online.booking.response;
+package com.moenuma.online.booking.model.response;
 
 import java.util.List;
 
