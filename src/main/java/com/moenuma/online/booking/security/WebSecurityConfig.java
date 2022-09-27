@@ -1,7 +1,8 @@
-package com.moenuma.online.booking.config;
+package com.moenuma.online.booking.security;
 
 import com.moenuma.online.booking.security.jwt.AuthEntryPointJwt;
-import com.moenuma.online.booking.service.UserDetailsServiceImpl;
+import com.moenuma.online.booking.security.jwt.AuthTokenFilter;
+import com.moenuma.online.booking.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,7 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .antMatcher("/api/**").permitAll()
+                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/online-booking/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
