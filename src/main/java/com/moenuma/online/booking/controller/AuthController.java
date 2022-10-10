@@ -1,7 +1,9 @@
 package com.moenuma.online.booking.controller;
 
 import com.moenuma.online.booking.model.ERole;
+import com.moenuma.online.booking.model.ImmutableUser;
 import com.moenuma.online.booking.model.Role;
+import com.moenuma.online.booking.model.ImmutableRole;
 import com.moenuma.online.booking.model.User;
 import com.moenuma.online.booking.model.request.LoginRequest;
 import com.moenuma.online.booking.model.request.SignupRequest;
@@ -89,12 +91,6 @@ public class AuthController {
                     .body("Error: Email is already in use!");
         }
 
-        User user = new User(
-                signupRequest.getUsername(),
-                signupRequest.getEmail(),
-                passwordEncoder.encode(signupRequest.getPassword())
-        );
-
         Set<ERole> strRoles = signupRequest.getRoles();
         Set<Role> roles = new HashSet<>();
 
@@ -110,7 +106,12 @@ public class AuthController {
             });
         }
 
-        user.setRoles(roles);
+        User user = ImmutableUser.builder()
+                .username(signupRequest.getUsername())
+                .email(signupRequest.getEmail())
+                .password(signupRequest.getPassword())
+                .addAllRoles(roles)
+                .build();
         userRepository.save(user);
 
         return ResponseEntity.ok("User registered successfully!");
@@ -118,9 +119,12 @@ public class AuthController {
 
     @PostMapping("/role")
     public ResponseEntity registerRole() {
-        roleRepository.save(new Role(ERole.ROLE_USER));
-        roleRepository.save(new Role(ERole.ROLE_ADMIN));
-        roleRepository.save(new Role(ERole.ROLE_MOD));
+        final Role roleUser = ImmutableRole.builder().name(ERole.ROLE_USER).build();
+        final Role roleAdmin = ImmutableRole.builder().name(ERole.ROLE_ADMIN).build();
+        final Role roleMod = ImmutableRole.builder().name(ERole.ROLE_MOD).build();
+        roleRepository.save(roleUser);
+        roleRepository.save(roleAdmin);
+        roleRepository.save(roleMod);
         return ResponseEntity.ok("ok");
     }
 

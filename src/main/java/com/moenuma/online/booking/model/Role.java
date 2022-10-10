@@ -1,5 +1,8 @@
 package com.moenuma.online.booking.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.immutables.value.Value;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,36 +14,16 @@ import javax.persistence.GenerationType;
 
 @Entity
 @Table(name = "roles")
-public class Role {
+@Value.Immutable
+@JsonDeserialize(as = ImmutableRole.class)
+public abstract class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    public abstract Integer getId();
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, unique = true)
-    private ERole name;
+    public abstract ERole getName();
 
-    public Role() {
-    }
-
-    public Role(ERole name) {
-        this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public ERole getName() {
-        return name;
-    }
-
-    public void setName(ERole name) {
-        this.name = name;
-    }
 }
